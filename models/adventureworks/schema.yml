@@ -1,0 +1,91 @@
+version: 2
+
+sources: 
+ - name: adventureworks
+   tables:
+     - name: sales_creditcard
+       description: Essa é a tabela de tipos de cartão de crédito
+       columns:
+        - name: CreditCardID
+          description:  Identificador do cartão de crédito
+          tests:
+           - unique
+           - not_null 
+     - name: person_stateprovince
+       description: Essa é a tabela de estados
+       columns:
+        - name: StateProvinceID
+          description: id do estado
+          tests:
+           - unique
+           - not_null
+     - name: person_address
+       description: Essa é a tabela de endereços
+       columns:
+        - name: AddressID
+          description: id do endereço
+          tests:
+           - unique
+           - not_null
+     - name: person_countryregion
+       description: Essa é a tabela de país
+       columns:
+        - name: CountryRegionCode
+          description: Código do país
+          tests:
+           - unique
+           - not_null
+     - name: sales_salesreason
+       description: Essa é a tabela de razão da compra
+       columns:
+        - name: SalesReasonID
+          description: Id da razão da compra
+          tests:
+           - unique
+           - not_null
+     - name: sales_salesorderheadersalesreason
+       description: Essa é a tabela de id das razões de compra
+       columns:
+        - name: salesorderid
+          description: id da compra
+          tests:
+            - not_null
+     - name: sales_salesorderheader
+       description: Essa é a tabela de id de compras
+       columns:
+        - name: salesorderid
+          description: id da compra
+          tests:
+            - unique
+            - not_null
+     - name: sales_salesorderdetail
+       description: Essa é a tabela de detalhe das compras
+       columns:
+        - name: salesorderid
+          description: id da compra
+          tests:
+            - not_null
+     - name: person_person
+       description: Essa é a tabela de pessoas
+       columns:
+        - name: BusinessEntityId
+          description: id 
+          tests:
+            - not_null
+            - unique
+     - name: production_product
+       description: Essa é a tabela de produto
+       columns:
+        - name: ProductID
+          description: id do produto
+          tests:
+            - not_null
+            - unique
+     - name: sales_customer
+       description: Essa é a tabela de cliente
+       columns:
+        - name: CustomerID
+          description: id do cliente
+          tests:
+            - not_null
+            - unique
