@@ -1,8 +1,42 @@
 {{ config(materialized='table') }}
 
 with
-    staging as (
-        select 
+    staging3 as (
+        select
+            countryregion.countryregioncode
+            , countryregion.name
+            --, countryregion.modifieddate	
+        from {{ ref('stg_countryregion') }} countryregion
+)
+    , staging4 as (
+        select
+            stateprovince.stateprovinceid
+            , stateprovince.name
+            --, stateprovince.stateprovincecode	
+            , stateprovince.countryregioncode
+            --, stateprovince.isonlystateprovinceflag
+            --, stateprovince.territoryid
+            --, stateprovince.rowguid	
+            --, stateprovince.modifieddate
+        from {{ ref('stg_stateprovince') }} stateprovince
+)
+    , transformed as (
+        select
+            row_number() over (order by stateprovinceid) as stateprovince_sk --auto incremental surrogate key, cria uma chave nova baseada em cada id
+                , stateprovinceid
+                , staging4.name as state_name
+                --, stateprovincecode	
+                , staging3.countryregioncode
+                , staging3.name as country_name
+                --, isonlystateprovinceflag
+                --, territoryid
+                --, rowguid	
+                --, modifieddate
+        from staging4
+        left join staging3 staging3 on staging4.countryregioncode = staging3.countryregioncode
+)
+    , staging as (
+        select
             address.addressid
             --, address.addressline1
             --, address.addressline2
@@ -14,39 +48,12 @@ with
             --, address.modifieddate
         from {{ ref('stg_address') }} address
 )
---    , staging2 as (
---        select
---            stateprovince.stateprovinceid
-            --, stateprovince.stateprovincecode	
---            , stateprovince.countryregioncode
-            --, stateprovince.isonlystateprovinceflag
-            --, stateprovince.name	
-            --, stateprovince.territoryid
-            --, stateprovince.rowguid	
-            --, stateprovince.modifieddate
---        from {{ ref('stg_stateprovince') }} stateprovince
---)
-    , staging3 as (
+    , staging2 as (
         select
-            countryregion.countryregioncode
-            --, countryregion.name
-            --, countryregion.modifieddate	
-        from {{ ref('stg_countryregion') }} countryregion
+            *
+        from transformed
 )
-    , staging4 as (
-        select
-            stateprovince.stateprovinceid
-            --, stateprovince.stateprovincecode	
-            , stateprovince.countryregioncode
-            --, stateprovince.isonlystateprovinceflag
-            --, stateprovince.name	
-            --, stateprovince.territoryid
-            --, stateprovince.rowguid	
-            --, stateprovince.modifieddate
-        from {{ ref('stg_stateprovince') }} stateprovince
-        left join staging3 staging3 on stateprovince.countryregioncode = staging3.countryregioncode
-)
-    , transformed as (
+    , transformed2 as (
         select
             row_number() over (order by addressid) as address_sk --auto incremental surrogate key, cria uma chave nova baseada em cada id
                 , addressid
@@ -57,9 +64,14 @@ with
                 --, spatiallocation
                 --, rowguid
                 --, modifieddate
-                ,staging4.stateprovinceid
+                , staging2.stateprovince_sk
+                , staging2.stateprovinceid
+                , staging2.state_name
+                , staging2.countryregioncode
+                , staging2.country_name
         from staging
-        left join staging4 staging4 on staging.stateprovinceid = staging4.stateprovinceid
+        left join staging2 staging2 on staging.stateprovinceid = staging2.stateprovinceid
 )
+select * from transformed2
 
-select * from transformed
+

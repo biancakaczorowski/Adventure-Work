@@ -1,7 +1,7 @@
 with source_data as (
     select
         countryregioncode
-        --, name
+        , name
         --, modifieddate
     from {{ source('adventureworks','person_countryregion') }}
 )
