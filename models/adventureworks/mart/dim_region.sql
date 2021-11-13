@@ -49,6 +49,7 @@ with
     , transformed as (
         select
             row_number() over (order by addressid) as address_sk --auto incremental surrogate key, cria uma chave nova baseada em cada id
+                , addressid
                 --, addressline1
                 --, addressline2
                 , city

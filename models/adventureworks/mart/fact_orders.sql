@@ -54,10 +54,10 @@ with
             --, orders.rowguid	
             --, orders.modifieddate
         from {{ ref('stg_order') }} orders 
-        left join reason reason on orders.salesorderid = reason.salesorder_sk
-        left join customer customer on orders.customerid = customer.customer_sk
-        left join region region on orders.billtoaddressid = region.address_sk
-        left join card card on orders.creditcardid = card.creditcard_sk
+        left join reason reason on orders.salesorderid = reason.salesorderid
+        left join customer customer on orders.customerid = customer.customerid
+        left join region region on orders.billtoaddressid = region.addressid
+        left join card card on orders.creditcardid = card.creditcardid
     )
     , order_details_with_sk as (
         select
@@ -72,7 +72,7 @@ with
             --, order_details.rowguid
             --, order_details.modifieddate
         from {{ ref('stg_orderdetail') }} order_details
-        left join product on order_details.productid = product.product_sk
+        left join product on order_details.productid = product.productid
     )
     , final as (
         select

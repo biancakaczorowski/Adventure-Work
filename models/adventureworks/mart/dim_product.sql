@@ -8,6 +8,7 @@ with
     , transformed as (
         select
             row_number() over (order by productid) as product_sk 
+            , productid
             , name
             --, productnumber
             --, makeflag	

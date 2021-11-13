@@ -19,6 +19,7 @@ with
     , transformed as (
         select
             row_number() over (order by salesorderid) as salesorder_sk
+                ,salesorderid
                 , staging2.salesreasonid
                 --, modifieddate
         from staging

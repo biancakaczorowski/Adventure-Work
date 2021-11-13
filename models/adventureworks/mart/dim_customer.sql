@@ -14,6 +14,7 @@ with
     , transformed as (
         select
             row_number() over (order by customerid) as customer_sk --auto incremental surrogate key, cria uma chave nova baseada em cada id
+                , customerid
                 , personid 
                 , storeid
                 , territoryid
